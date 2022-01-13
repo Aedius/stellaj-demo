@@ -1,0 +1,16 @@
+<html>
+<head>
+    <script>
+        var exampleSocket = new WebSocket("ws://localhost:8080/ws");
+        exampleSocket.onopen = function (event) {
+          exampleSocket.send("this is sparta");
+        };
+        exampleSocket.onmessage = function (event) {
+               console.log(event.data);
+        }
+    </script>
+</head>
+<body>
+hey john
+</body>
+</html>
