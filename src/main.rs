@@ -1,8 +1,8 @@
 #[macro_use]
 extern crate rocket;
 
-use eventstore::{ Client, EventData, SubEvent};
-use rocket::fs::{FileServer, relative};
+use eventstore::{Client, EventData, SubEvent};
+use rocket::fs::{relative, FileServer};
 use rocket::futures::TryStreamExt;
 use rocket::response::stream::TextStream;
 use rocket::serde::{Deserialize, Serialize};
@@ -29,7 +29,8 @@ async fn greet(db_state: &State<DbState>, name: &str) -> String {
 
     let _ = db
         .append_to_stream("greeting-stream", &Default::default(), greet)
-        .await.unwrap();
+        .await
+        .unwrap();
 
     format!("Hello {}!", &name)
 }
@@ -39,9 +40,10 @@ async fn greet(db_state: &State<DbState>, name: &str) -> String {
 async fn greetings(db_state: &State<DbState>) -> TextStream![String] {
     let db = db_state.db.clone();
 
-    let mut stream  = db
+    let mut stream = db
         .subscribe_to_stream("greeting-stream", &Default::default())
-        .await.unwrap();
+        .await
+        .unwrap();
 
     TextStream! {
 
@@ -55,7 +57,6 @@ async fn greetings(db_state: &State<DbState>) -> TextStream![String] {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-
     // Creates a client settings for a single node configuration.
     let settings = "esdb://admin:changeit@localhost:2113?tls=false&tlsVerifyCert=false".parse()?;
     let client = Client::create(settings).await?;
