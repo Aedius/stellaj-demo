@@ -1,9 +1,11 @@
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
-use eventstore::{All, Client, EventData, ReadResult};
-use rocket::futures::TryStreamExt;
+use eventstore::{ Client, EventData, SubEvent};
 use rocket::fs::{FileServer, relative};
-use rocket::serde::{Serialize, Deserialize};
+use rocket::futures::TryStreamExt;
+use rocket::response::stream::TextStream;
+use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -12,13 +14,12 @@ struct Greeting {
     name: String,
 }
 
-struct DbState{
-    db: Client
+struct DbState {
+    db: Client,
 }
 
 #[get("/<name>")]
 async fn greet(db_state: &State<DbState>, name: &str) -> String {
-
     let db = db_state.db.clone();
 
     let payload = Greeting {
@@ -33,7 +34,24 @@ async fn greet(db_state: &State<DbState>, name: &str) -> String {
     format!("Hello {}!", &name)
 }
 
+/// Produce an infinite series of `"hello"`s, one per second.
+#[get("/greetings")]
+async fn greetings(db_state: &State<DbState>) -> TextStream![String] {
+    let db = db_state.db.clone();
 
+    let mut stream  = db
+        .subscribe_to_stream("greeting-stream", &Default::default())
+        .await.unwrap();
+
+    TextStream! {
+
+        while let Some(event) = stream.try_next().await.unwrap() {
+            if let SubEvent::EventAppeared(event) = event {
+                 yield format!("{:?}\n\n", event);
+            }
+        }
+    }
+}
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -42,24 +60,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let settings = "esdb://admin:changeit@localhost:2113?tls=false&tlsVerifyCert=false".parse()?;
     let client = Client::create(settings).await?;
 
-
-    let result = client
-        .read_stream("greeting-stream", &Default::default(), All)
-        .await?;
-
-    if let ReadResult::Ok(mut stream) = result {
-        while let Some(event) = stream.try_next().await? {
-            let event = event.get_original_event()
-                .as_json::<Greeting>()?;
-
-            // Do something productive with the result.
-            println!("{:?}", event);
-        }
-    }
+    //
+    // let result = client
+    //     .read_stream("greeting-stream", &Default::default(), All)
+    //     .await?;
+    //
+    // if let ReadResult::Ok(mut stream) = result {
+    //     while let Some(event) = stream.try_next().await? {
+    //         let event = event.get_original_event()
+    //             .as_json::<Greeting>()?;
+    //
+    //         // Do something productive with the result.
+    //         println!("{:?}", event);
+    //     }
+    // }
 
     rocket::build()
-        .manage(DbState{ db: client.clone()})
+        .manage(DbState { db: client.clone() })
         .mount("/hello", routes![greet])
+        .mount("/", routes![greetings])
         .mount("/", FileServer::from(relative!("static")))
         .launch()
         .await?;
