@@ -1,7 +1,7 @@
 <html>
 <head>
     <script>
-        const evtSource = new EventSource("greetings");
+        const evtSource = new EventSource("/event/greetings");
 
         evtSource.addEventListener("message", (ev) => {
           console.log("raw data", JSON.stringify(ev.data));
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<form method="post" action="/login">
+<form method="post" action="/auth/login">
     <label for="username">Username</label>
     <input id="username" name="username" type="text">
     <label for="password">Password</label>
@@ -25,7 +25,7 @@
 </form>
 
 <hr/>
-<a href="/hello/">clic and add your name </a>
+<a href="/event/hello/">clic and add your name </a>
 <hr />
 </body>
 </html>

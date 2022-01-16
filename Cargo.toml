@@ -5,10 +5,10 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies]
+eventstore = "1.0"
+jsonwebtoken = "7.2"
 
 [dependencies.rocket]
 version = "0.5.0-rc.1"
 features = ["json"]
-
-[dependencies]
-eventstore = "1.0"

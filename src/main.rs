@@ -1,25 +1,36 @@
 mod event;
+mod auth;
 
 #[macro_use]
 extern crate rocket;
 
-use event::DbState;
-use eventstore::{Client};
-use rocket::fs::{relative, FileServer};
+use eventstore::Client;
+use rocket::fs::{FileServer, relative};
+
+pub struct EventDb {
+    pub db: Client,
+}
+
+impl EventDb {
+    pub fn new(db: Client) -> EventDb {
+        EventDb { db }
+    }
+}
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Creates a client settings for a single node configuration.
     let settings = "esdb://admin:changeit@localhost:2113?tls=false&tlsVerifyCert=false".parse()?;
-    let client = Client::create(settings).await?;
+    let event_db = Client::create(settings).await?;
 
     rocket::build()
-        .manage(DbState::new(client.clone()))
-        .mount("/hello", routes![event::greet])
-        .mount("/", routes![event::greetings])
+        .manage(EventDb::new(event_db.clone()))
+        .mount("/event", routes![event::greetings,event::greet])
+        .mount("/auth", routes![auth::login])
         .mount("/", FileServer::from(relative!("static")))
         .launch()
         .await?;
 
     Ok(())
 }
+
