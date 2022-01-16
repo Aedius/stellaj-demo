@@ -1440,6 +1440,7 @@ version = "0.0.1"
 dependencies = [
  "eventstore",
  "rocket",
+ "serde_json",
 ]
 
 [[package]]

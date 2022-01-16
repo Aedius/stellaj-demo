@@ -4,7 +4,7 @@ extern crate rocket;
 use eventstore::{Client, EventData, SubEvent};
 use rocket::fs::{relative, FileServer};
 use rocket::futures::TryStreamExt;
-use rocket::response::stream::TextStream;
+use rocket::response::stream::{Event, EventStream};
 use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
 
@@ -37,7 +37,7 @@ async fn greet(db_state: &State<DbState>, name: &str) -> String {
 
 /// Produce an infinite series of `"hello"`s, one per second.
 #[get("/greetings")]
-async fn greetings(db_state: &State<DbState>) -> TextStream![String] {
+async fn greetings(db_state: &State<DbState>) -> EventStream![] {
     let db = db_state.db.clone();
 
     let mut stream = db
@@ -45,11 +45,31 @@ async fn greetings(db_state: &State<DbState>) -> TextStream![String] {
         .await
         .unwrap();
 
-    TextStream! {
+    EventStream! {
 
         while let Some(event) = stream.try_next().await.unwrap() {
             if let SubEvent::EventAppeared(event) = event {
-                 yield format!("{:?}\n\n", event);
+
+                match event.event{
+                    Some( recorded_event) => {
+
+                        match recorded_event.event_type.as_str() {
+                            "greeting" => {
+                                let gr_event : Greeting = recorded_event.as_json().unwrap();
+
+                                println!("{:?}", gr_event);
+
+                                yield Event::json(&gr_event);
+                            }
+                            _ =>{
+                                println!("Event {} not recognized", recorded_event.event_type);
+                            }
+                        }
+
+                    },
+                    None => {}
+                }
+
             }
         }
     }
