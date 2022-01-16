@@ -12,4 +12,3 @@ features = ["json"]
 
 [dependencies]
 eventstore = "1.0"
-#rocket-jwt-authorization = "0.2.1"
