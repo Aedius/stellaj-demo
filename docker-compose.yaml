@@ -23,6 +23,15 @@ services:
         source: eventstore-volume-logs
         target: /var/log/eventstore
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:16.1.0
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    ports:
+      - "8080:8080"
+
+
 volumes:
   eventstore-volume-data:
   eventstore-volume-logs:

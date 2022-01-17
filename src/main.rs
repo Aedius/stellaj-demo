@@ -1,11 +1,11 @@
-mod event;
 mod auth;
+mod event;
 
 #[macro_use]
 extern crate rocket;
 
 use eventstore::Client;
-use rocket::fs::{FileServer, relative};
+use rocket::fs::{relative, FileServer};
 
 pub struct EventDb {
     pub db: Client,
@@ -25,12 +25,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     rocket::build()
         .manage(EventDb::new(event_db.clone()))
-        .mount("/event", routes![event::greetings,event::greet])
-        .mount("/auth", routes![auth::login])
+        .mount("/event", routes![event::greetings, event::greet])
+        .mount(
+            "/auth",
+            routes![auth::login, auth::login_token, auth::welcome],
+        )
         .mount("/", FileServer::from(relative!("static")))
         .launch()
         .await?;
 
     Ok(())
 }
-

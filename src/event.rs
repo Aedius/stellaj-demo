@@ -1,9 +1,9 @@
-use eventstore::{ EventData, SubEvent};
+use crate::EventDb;
+use eventstore::{EventData, SubEvent};
 use rocket::futures::TryStreamExt;
 use rocket::response::stream::{Event, EventStream};
 use rocket::serde::{Deserialize, Serialize};
 use rocket::State;
-use crate::EventDb;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "rocket::serde")]

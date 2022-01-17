@@ -1,0 +1,12 @@
+{
+  "realm": "horfimbor",
+  "auth-server-url": "http://localhost:8080/auth/",
+  "ssl-required": "external",
+  "resource": "horfimbor-demo",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "8gvRWJEwjtEV1RFpQCfybThiPgeZjl6y"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}
