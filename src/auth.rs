@@ -1,13 +1,17 @@
 use reqwest::header::HeaderMap;
-use rocket::http::Status;
-use rocket::response::{self, Redirect, Responder, Response};
+use rocket::fs::NamedFile;
+use rocket::response::Redirect;
 use rocket::serde::json::serde_json::from_str;
-use rocket::serde::Deserialize;
+use rocket::serde::{json::Json, Deserialize, Serialize};
 use urlencoding::encode;
 
-use rocket::request::Request;
+use rocket::Route;
 
-#[derive(Deserialize, Debug)]
+pub fn get_route() -> Vec<Route> {
+    return routes![login, login_token, welcome, login_token_get];
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "rocket::serde")]
 pub struct Tokens {
     access_token: String,
@@ -21,17 +25,6 @@ pub struct Tokens {
     scope: String,
 }
 
-#[rocket::async_trait]
-impl<'r> Responder<'r, 'static> for Tokens {
-    fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
-        Response::build()
-            .status(Status::Ok)
-            .raw_header("Content-Type", "text/html; charset=UTF-8")
-            .raw_header("Authorization", format!("Bearer {}", self.access_token))
-            .ok()
-    }
-}
-
 #[get("/login")]
 pub fn login() -> Redirect {
     let host = "http://localhost:8080";
@@ -43,7 +36,17 @@ pub fn login() -> Redirect {
 }
 
 #[get("/login-token?<session_state>&<code>")]
-pub async fn login_token(session_state: &str, code: &str) -> Tokens {
+pub async fn login_token_get(session_state: &str, code: &str) -> NamedFile {
+    let _ = session_state;
+    let _ = code;
+    NamedFile::open("static/auth/login-token.html")
+        .await
+        .ok()
+        .unwrap()
+}
+
+#[post("/login-token?<session_state>&<code>")]
+pub async fn login_token(session_state: &str, code: &str) -> Json<Tokens> {
     let _ = session_state;
 
     let host = "http://localhost:8080";
@@ -77,7 +80,7 @@ pub async fn login_token(session_state: &str, code: &str) -> Tokens {
 
     let tokens: Tokens = from_str(&text).unwrap();
 
-    tokens
+    Json(tokens)
 }
 
 #[get("/welcome")]

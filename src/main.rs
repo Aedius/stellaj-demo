@@ -26,11 +26,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     rocket::build()
         .manage(EventDb::new(event_db.clone()))
         .mount("/event", routes![event::greetings, event::greet])
-        .mount(
-            "/auth",
-            routes![auth::login, auth::login_token, auth::welcome],
-        )
-        .mount("/", FileServer::from(relative!("static")))
+        .mount("/auth", auth::get_route())
+        .mount("/", FileServer::from(relative!("web")))
         .launch()
         .await?;
 
