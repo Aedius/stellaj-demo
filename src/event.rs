@@ -1,4 +1,5 @@
-use eventstore::{Client, EventData, SubEvent};
+use crate::EventDb;
+use eventstore::{EventData, SubEvent};
 use rocket::futures::TryStreamExt;
 use rocket::response::stream::{Event, EventStream};
 use rocket::serde::{Deserialize, Serialize};
@@ -10,18 +11,8 @@ struct Greeting {
     name: String,
 }
 
-pub struct DbState {
-    db: Client,
-}
-
-impl DbState {
-    pub fn new(db: Client) -> DbState {
-        DbState { db }
-    }
-}
-
 #[get("/<name>")]
-pub async fn greet(db_state: &State<DbState>, name: &str) -> String {
+pub async fn greet(db_state: &State<EventDb>, name: &str) -> String {
     let db = db_state.db.clone();
 
     let payload = Greeting {
@@ -39,7 +30,7 @@ pub async fn greet(db_state: &State<DbState>, name: &str) -> String {
 
 /// Produce an infinite series of `"hello"`s, one per second.
 #[get("/greetings")]
-pub async fn greetings(db_state: &State<DbState>) -> EventStream![] {
+pub async fn greetings(db_state: &State<EventDb>) -> EventStream![] {
     let db = db_state.db.clone();
 
     let mut stream = db

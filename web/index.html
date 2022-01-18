@@ -1,0 +1,25 @@
+<html>
+<head>
+    <script>
+        const evtSource = new EventSource("/event/greetings");
+
+        evtSource.addEventListener("message", (ev) => {
+          console.log("raw data", JSON.stringify(ev.data));
+
+          var p = document.createElement("p");
+          p.innerHTML = JSON.parse(ev.data).name
+          document.body.appendChild(p);
+
+        });
+
+    </script>
+</head>
+<body>
+
+<a href="/auth/login">login !</a>
+
+<hr/>
+<a href="/event/hello/">clic and add your name </a>
+<hr />
+</body>
+</html>
