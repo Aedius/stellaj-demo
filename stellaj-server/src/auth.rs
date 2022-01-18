@@ -3,9 +3,8 @@ use rocket::fs::NamedFile;
 use rocket::response::Redirect;
 use rocket::serde::json::serde_json::from_str;
 use rocket::serde::{json::Json, Deserialize, Serialize};
-use urlencoding::encode;
-
 use rocket::Route;
+use urlencoding::encode;
 
 pub fn get_route() -> Vec<Route> {
     return routes![login, login_token, welcome, login_token_get];
@@ -20,7 +19,8 @@ pub struct Tokens {
     refresh_token: String,
     token_type: String,
     id_token: String,
-    // not-before-policy: usize,
+    #[serde(rename = "not-before-policy")]
+    not_before_policy: usize,
     session_state: String,
     scope: String,
 }
@@ -39,7 +39,7 @@ pub fn login() -> Redirect {
 pub async fn login_token_get(session_state: &str, code: &str) -> NamedFile {
     let _ = session_state;
     let _ = code;
-    NamedFile::open("static/auth/login-token.html")
+    NamedFile::open("../static/auth/login-token.html")
         .await
         .ok()
         .unwrap()
