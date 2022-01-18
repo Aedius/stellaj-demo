@@ -11,7 +11,7 @@ cargo install trunk
 ## build
 
 `
-trunk build stellaj-client/index.html
+trunk build --dist stellaj-server/web stellaj-client/index.html
 
 cargo build -p stellaj-server
 `
