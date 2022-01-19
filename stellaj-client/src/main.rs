@@ -45,7 +45,7 @@ impl Component for WelcomeComp{
             log::info!("callback");
             WelcomeMsg::EsReady(serde_json::from_str(&bufstr))
         });
-        let listener = EventListener::new(&es, "Wc", move |event: &Event| {
+        let listener = EventListener::new(&es, "message", move |event: &Event| {
             log::info!("event received");
             let event = event.dyn_ref::<MessageEvent>().unwrap();
             let text = event.data().as_string().unwrap();
