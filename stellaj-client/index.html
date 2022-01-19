@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     // TODO in rust
-    <script>
-        const evtSource = new EventSource("/event/greetings");
+<!--    <script>-->
+<!--        const evtSource = new EventSource("/event/greetings");-->
 
-        evtSource.addEventListener("message", (ev) => {
-          console.log("raw data", JSON.stringify(ev.data));
+<!--        evtSource.addEventListener("message", (ev) => {-->
+<!--          console.log("raw data", JSON.stringify(ev.data));-->
 
-          var p = document.createElement("p");
-          p.innerHTML = JSON.parse(ev.data).name
-          document.body.appendChild(p);
+<!--          var p = document.createElement("p");-->
+<!--          p.innerHTML = JSON.parse(ev.data).name-->
+<!--          document.body.appendChild(p);-->
 
-        });
+<!--        });-->
 
-    </script>
+<!--    </script>-->
 </head>
 <body>
 
