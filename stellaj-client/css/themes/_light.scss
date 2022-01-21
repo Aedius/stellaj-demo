@@ -1,0 +1,7 @@
+@use "sass:map";
+
+
+$themes : map.set($themes, 'light', (
+    backgroundColor: #aa3939,
+    textColor: #D46A6A,
+  ));
