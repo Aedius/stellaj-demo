@@ -1,36 +1,40 @@
 @charset "UTF-8";
 
-// 1. Configuration and helpers
+// Configuration and helpers
 @import
   'abstracts/variables',
   'abstracts/functions',
   'abstracts/mixins';
 
-// 2. Vendors
+// Vendors
 @import
   'vendors/normalize';
 
-// 3. Base stuff
+$themes:();
+
+// Themes
+@import
+  'themes/dark',
+  'themes/light';
+
+
+// Base stuff
 @import
   'base/base',
   'base/fonts',
   'base/typography',
   'base/helpers';
 
-// 4. Layout-related sections
+// Layout-related sections
 @import
   'layout/header',
   'layout/footer';
 
-// 5. Components
+// Components
 @import
   'components/button';
 
-// 6. Page-specific styles
+// Page-specific styles
 @import
   'pages/home';
 
-// 7. Themes
-@import
-  'themes/dark',
-  'themes/light';

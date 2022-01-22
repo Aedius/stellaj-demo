@@ -2,15 +2,30 @@ use std::{fmt::{Debug}};
 
 use yew::prelude::*;
 
-
 use gloo_events::EventListener;
+use reqwasm::http::Request;
 use wasm_bindgen::{JsCast, JsValue};
-
+use wasm_bindgen_futures::spawn_local;
+use web_sys::{Event, EventSource, MessageEvent, window};
 use yew::{html, Component, Context, Html};
-use web_sys::{Event, EventSource, MessageEvent};
+
 
 #[macro_use]
 extern crate serde_derive;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tokens {
+    access_token: String,
+    expires_in: usize,
+    refresh_expires_in: usize,
+    refresh_token: String,
+    token_type: String,
+    id_token: String,
+    #[serde(rename = "not-before-policy")]
+    not_before_policy: usize,
+    session_state: String,
+    scope: String,
+}
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 struct Wc {
@@ -42,18 +57,14 @@ impl Component for WelcomeComp{
             .unwrap();
 
         let cb = ctx.link().callback(|bufstr: String| {
-            log::info!("callback");
             WelcomeMsg::EsReady(serde_json::from_str(&bufstr))
         });
         let listener = EventListener::new(&es, "message", move |event: &Event| {
-            log::info!("event received");
             let event = event.dyn_ref::<MessageEvent>().unwrap();
             let text = event.data().as_string().unwrap();
 
             cb.emit(text);
         });
-
-        log::info!("load");
 
         WelcomeComp{
             es,
@@ -64,13 +75,10 @@ impl Component for WelcomeComp{
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
 
-        log::info!("update");
-
         match msg {
             WelcomeMsg::EsReady(response) => {
                 match response {
                     Ok(data_result) => {
-                        log::info!("passe");
                         self.member.push(data_result.name.clone());
                     }
                     Err(e) => {
@@ -99,6 +107,31 @@ impl Component for WelcomeComp{
 
 #[function_component(App)]
 fn app() -> Html {
+
+    let window = window().unwrap();
+    let location = window.location();
+    let params = location.search().unwrap();
+
+    if !params.is_empty(){
+        log::info!("location : {:?}", params);
+        spawn_local(async move {
+            let resp = Request::post(format!("/auth/login-token{}", params).as_str())
+                .send().await.unwrap();
+
+            let token =  resp.json::<Tokens>().await.unwrap();
+            log::info!("tokens : {:?}",token);
+
+            let message = Request::get("/auth/welcome")
+                .header("Authorization", format!("Bearer {}", token.access_token).as_str())
+                .send().await.unwrap();
+
+
+
+            log::info!("message : {:?}", message.text().await.unwrap());
+        });
+
+    }
+
     html! {
         <div>
             <h1>{ "Hello World" }</h1>
