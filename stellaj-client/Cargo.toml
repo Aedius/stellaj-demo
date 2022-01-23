@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
+enum-iterator = "0.7.0"
 js-sys = "0.3"
 gloo-events = "0.1.1"
 gloo-utils = "0.1"

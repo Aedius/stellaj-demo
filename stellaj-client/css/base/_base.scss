@@ -7,10 +7,6 @@
  */
 body {
     box-sizing: border-box;
-    @include themify($themes) {
-        color: themed('textColor');
-        background-color: themed('backgroundColor');
-    }
 }
 
 /**
@@ -23,6 +19,7 @@ body {
 *::before,
 *::after {
   box-sizing: inherit;
+  margin:0;
 }
 
 /**
@@ -37,3 +34,4 @@ a {
     text-decoration: underline;
   }
 }
+

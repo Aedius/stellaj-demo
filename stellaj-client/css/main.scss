@@ -10,13 +10,6 @@
 @import
   'vendors/normalize';
 
-$themes:();
-
-// Themes
-@import
-  'themes/dark',
-  'themes/light';
-
 
 // Base stuff
 @import
@@ -25,8 +18,16 @@ $themes:();
   'base/typography',
   'base/helpers';
 
+$themes:();
+
+// Themes
+@import
+  'themes/dark',
+  'themes/light';
+
 // Layout-related sections
 @import
+  'layout/body',
   'layout/header',
   'layout/footer';
 

@@ -14,12 +14,12 @@ pub enum WelcomeMsg {
     EsReady(Result<Wc, serde_json::Error>),
 }
 
-pub struct WelcomeComp {
+pub struct Welcome {
     member: Vec<String>,
     _listener: EventListener,
 }
 
-impl Component for WelcomeComp {
+impl Component for Welcome {
     type Message = WelcomeMsg;
     type Properties = ();
 
@@ -35,6 +35,7 @@ impl Component for WelcomeComp {
         let cb = ctx
             .link()
             .callback(|bufstr: String| WelcomeMsg::EsReady(serde_json::from_str(&bufstr)));
+
         let listener = EventListener::new(&es, "message", move |event: &Event| {
             let event = event.dyn_ref::<MessageEvent>().unwrap();
             let text = event.data().as_string().unwrap();
@@ -42,7 +43,7 @@ impl Component for WelcomeComp {
             cb.emit(text);
         });
 
-        WelcomeComp {
+        Welcome {
             member: Vec::new(),
             _listener: listener,
         }
@@ -69,7 +70,7 @@ impl Component for WelcomeComp {
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <div id="welcome">
+            <div class="welcome">
             <p>{"Last connected"}</p>
             {
                 self.member.clone().into_iter().map(| name| {
