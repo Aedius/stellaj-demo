@@ -20,4 +20,4 @@ cargo build -p stellaj-server
 
 - cleanup stream on close
 - cleanup stream on kill*
-- create a db for user
+- handle all errors 😨
