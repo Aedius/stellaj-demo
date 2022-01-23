@@ -1870,6 +1870,7 @@ name = "stellaj-client"
 version = "0.0.1"
 dependencies = [
  "gloo-events",
+ "gloo-storage",
  "gloo-utils",
  "js-sys",
  "log",

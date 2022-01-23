@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use yew::prelude::*;
 
 use gloo_events::EventListener;
+use gloo_storage::{LocalStorage, Storage};
 use reqwasm::http::Request;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::spawn_local;
@@ -104,7 +105,7 @@ impl Component for WelcomeComp {
 #[function_component(App)]
 fn app() -> Html {
     let window = window().unwrap();
-    let location = window.location();
+    let mut location = window.location();
     let params = location.search().unwrap();
 
     if !params.is_empty() {
@@ -128,6 +129,10 @@ fn app() -> Html {
                 .unwrap();
 
             log::info!("message : {:?}", message.text().await.unwrap());
+
+            LocalStorage::set("token", token);
+
+            location.replace("game").unwrap();
         });
     }
 
