@@ -15,7 +15,6 @@ pub enum WelcomeMsg {
 }
 
 pub struct WelcomeComp {
-    es: EventSource,
     member: Vec<String>,
     _listener: EventListener,
 }
@@ -44,7 +43,6 @@ impl Component for WelcomeComp {
         });
 
         WelcomeComp {
-            es,
             member: Vec::new(),
             _listener: listener,
         }
@@ -55,7 +53,10 @@ impl Component for WelcomeComp {
             WelcomeMsg::EsReady(response) => {
                 match response {
                     Ok(data_result) => {
-                        self.member.push(data_result.name.clone());
+                        self.member.insert(0, data_result.name.clone());
+                        if self.member.len() > 10 {
+                            self.member.resize(10, "".to_string())
+                        }
                     }
                     Err(e) => {
                         log::error!("{}", e);
@@ -71,8 +72,8 @@ impl Component for WelcomeComp {
             <div id="welcome">
             <p>{"Last connected"}</p>
             {
-                self.member.clone().into_iter().map(|name| {
-                    html!{<div key={name.clone()}>{ format!("Welcome {}!",name.clone()) }</div>}
+                self.member.clone().into_iter().map(| name| {
+                    html!{<div>{ format!("Welcome {}!",name.clone()) }</div>}
                 }).collect::<Html>()
             }
             </div>
