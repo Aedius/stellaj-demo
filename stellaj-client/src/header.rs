@@ -67,12 +67,13 @@ impl Component for Header {
         html! {
             <div class="header">
                 {"select theme"}
+            <br/>
                 {
                     Theme::into_enum_iter().map(| theme | {
 
                         if theme == self.theme{
                             html!{<div>{
-                                format!("Choose {:?}!", theme)
+                                format!("it's {:?}!", theme)
                             }</div>}
                         }else{
 
