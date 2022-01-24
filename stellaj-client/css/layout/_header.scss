@@ -5,7 +5,7 @@
 .header {
     @include themify($themes) {
         color: themed('textColor');
-        background-color: themed('backgroundColor2');
+        background-color: themed('backgroundColor-light');
     }
     width: 100%;
 }

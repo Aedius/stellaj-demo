@@ -3,6 +3,8 @@
 
 $themes : map.set($themes, 'light', (
     backgroundColor: #aa3939,
-    backgroundColor2: #aa3950,
+    backgroundColor-light: #aa3950,
     textColor: #D46A6A,
+    textColor-shadow: #D46A6A,
+    textColor-hover: #D46A6A,
   ));

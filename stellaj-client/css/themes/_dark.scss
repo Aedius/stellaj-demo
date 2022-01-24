@@ -2,6 +2,8 @@
 
 $themes : map.set($themes, 'dark', (
     backgroundColor: #2e4272,
-    backgroundColor2: #2e4280,
+    backgroundColor-light: #2e4280,
     textColor: #4f628e,
+    textColor-shadow: #5B35DB,
+    textColor-hover: #9BE6EE,
   ));

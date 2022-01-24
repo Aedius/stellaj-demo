@@ -79,7 +79,7 @@ impl Component for Header {
 
                             let onclick = ctx.link().callback(move |_| Message::ChangeTheme(theme));
 
-                            html!{<button {onclick}>{
+                            html!{<button class="btn" {onclick}>{
                                 format!("Choose {:?}!", theme)
                             }</button>}
                         }
