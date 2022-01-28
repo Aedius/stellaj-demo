@@ -9,7 +9,7 @@ pub enum Theme {
     Light,
 }
 
-impl Default for Theme{
+impl Default for Theme {
     fn default() -> Self {
         Theme::Dark
     }

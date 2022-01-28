@@ -1,6 +1,6 @@
 mod header;
-mod welcome;
 mod map;
+mod welcome;
 
 use std::fmt::Debug;
 
@@ -13,8 +13,8 @@ use web_sys::window;
 use yew::html;
 
 use header::{Header, Theme};
-use welcome::Welcome;
 use map::MapHtml;
+use welcome::Welcome;
 
 #[macro_use]
 extern crate serde_derive;

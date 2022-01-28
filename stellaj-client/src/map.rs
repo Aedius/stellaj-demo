@@ -1,52 +1,53 @@
 use speedy2d::color::Color;
-use speedy2d::{Graphics2D, WebCanvas};
 use speedy2d::dimen::Vector2;
 use speedy2d::window::{WindowHandler, WindowHelper, WindowStartupInfo};
+use speedy2d::{Graphics2D, WebCanvas};
 use yew::{Component, Context, Html};
 
-use yew::prelude::*;
 use crate::Theme;
+use yew::prelude::*;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct MapProps {
-    pub theme: Theme
+    pub theme: Theme,
 }
 
 pub struct MapHtml {
     pub theme: Theme,
-    canvas : Option<WebCanvas<MapEvent>>
+    canvas: Option<WebCanvas<MapEvent>>,
 }
 
-struct MapHandler{
+struct MapHandler {
     size: Vector2<f32>,
     bg_color: Color,
     color: Color,
 }
 
-struct MapEvent{
-    theme: Theme
+struct MapEvent {
+    theme: Theme,
 }
 
-impl WindowHandler<MapEvent> for MapHandler{
-
+impl WindowHandler<MapEvent> for MapHandler {
     fn on_start(&mut self, _helper: &mut WindowHelper<MapEvent>, info: WindowStartupInfo) {
-        self.size = Vector2::new(info.viewport_size_pixels().x as f32, info.viewport_size_pixels().y as f32 );
+        self.size = Vector2::new(
+            info.viewport_size_pixels().x as f32,
+            info.viewport_size_pixels().y as f32,
+        );
     }
 
     fn on_user_event(&mut self, helper: &mut WindowHelper<MapEvent>, user_event: MapEvent) {
         match user_event.theme {
             Theme::Dark => {
-                self.bg_color= Color::GRAY;
-                self.color= Color::BLUE;
+                self.bg_color = Color::GRAY;
+                self.color = Color::BLUE;
             }
             Theme::Light => {
-                self.bg_color= Color::YELLOW;
-                self.color= Color::GREEN;
+                self.bg_color = Color::YELLOW;
+                self.color = Color::GREEN;
             }
         }
         helper.request_redraw()
     }
-
 
     fn on_resize(&mut self, helper: &mut WindowHelper<MapEvent>, size_pixels: Vector2<u32>) {
         self.size = Vector2::new(size_pixels.x as f32, size_pixels.y as f32);
@@ -56,10 +57,9 @@ impl WindowHandler<MapEvent> for MapHandler{
 
     fn on_draw(&mut self, _helper: &mut WindowHelper<MapEvent>, g: &mut Graphics2D) {
         g.clear_screen(Color::GRAY);
-        let pos = Vector2::new(self.size.x/2.0, self.size.y/2.0);
+        let pos = Vector2::new(self.size.x / 2.0, self.size.y / 2.0);
         g.draw_circle(pos, 50.0, Color::BLUE);
     }
-
 }
 
 impl Component for MapHtml {
@@ -71,7 +71,7 @@ impl Component for MapHtml {
 
         MapHtml {
             theme: props.theme,
-            canvas : None,
+            canvas: None,
         }
     }
 
@@ -84,7 +84,7 @@ impl Component for MapHtml {
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
-        html!{
+        html! {
             <canvas id="my_canvas"></canvas>
         }
     }
@@ -93,7 +93,7 @@ impl Component for MapHtml {
         let handler = MapHandler {
             size: Vector2::new(0.0, 0.0),
             bg_color: Color::GRAY,
-            color: Color::BLUE
+            color: Color::BLUE,
         };
 
         let mut canvas = WebCanvas::new_for_id_with_user_events("my_canvas", handler).unwrap();
