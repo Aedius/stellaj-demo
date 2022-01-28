@@ -9,6 +9,12 @@ pub enum Theme {
     Light,
 }
 
+impl Default for Theme{
+    fn default() -> Self {
+        Theme::Dark
+    }
+}
+
 impl Into<Classes> for Theme {
     fn into(self) -> Classes {
         match self {

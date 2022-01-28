@@ -1,5 +1,6 @@
 mod header;
 mod welcome;
+mod map;
 
 use std::fmt::Debug;
 
@@ -13,6 +14,7 @@ use yew::html;
 
 use header::{Header, Theme};
 use welcome::Welcome;
+use map::MapHtml;
 
 #[macro_use]
 extern crate serde_derive;
@@ -93,6 +95,8 @@ impl Component for App {
 
         log::info!("theme : {:?}", self.theme);
 
+        let theme = self.theme;
+
         html! {
             <div class={self.theme}>
                 <Header theme={self.theme} {on_theme_change}/>
@@ -106,6 +110,7 @@ impl Component for App {
                     </p>
                     <hr/>
                     <Welcome />
+                    <MapHtml {theme}/>
                 </div>
             </div>
         }
