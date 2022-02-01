@@ -110,7 +110,7 @@ impl Component for App {
                     </p>
                     <hr/>
                     <Welcome />
-                    <MapHtml {theme} size=1500/>
+                    <MapHtml {theme} size=2000/>
                 </div>
             </div>
         }
