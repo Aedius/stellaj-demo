@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 eventstore = "1.0"
 jsonwebtokens = "1.1"
+public-event = { path = "../public-event" }
 urlencoding = "2.1.0"
 reqwest = "0.11.9"
 serde_json = "1"
