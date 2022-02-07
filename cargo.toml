@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "public-event",
     "stellaj-server",
     "stellaj-client"
 ]

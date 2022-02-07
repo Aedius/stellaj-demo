@@ -1286,6 +1286,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "public-event"
+version = "0.0.1"
+
+[[package]]
 name = "quote"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
