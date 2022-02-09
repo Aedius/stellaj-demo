@@ -3,15 +3,11 @@ use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{Event, EventSource, MessageEvent};
 use yew::{Component, Context, Html};
 
+use public_event::{HomepageEvent, HomepageSse};
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct Wc {
-    name: String,
-}
-
 pub enum WelcomeMsg {
-    EsReady(Result<Wc, serde_json::Error>),
+    EsReady(Result<HomepageSse, serde_json::Error>),
 }
 
 pub struct Welcome {
@@ -53,12 +49,17 @@ impl Component for Welcome {
         match msg {
             WelcomeMsg::EsReady(response) => {
                 match response {
-                    Ok(data_result) => {
-                        self.member.insert(0, data_result.name.clone());
-                        if self.member.len() > 10 {
-                            self.member.resize(10, "".to_string())
-                        }
-                    }
+                    Ok(data_result) => match data_result {
+                        HomepageSse::Event(event) => match event {
+                            HomepageEvent::NewPlayer(player) => {
+                                self.member.insert(0, player.pseudo.clone());
+                                if self.member.len() > 10 {
+                                    self.member.resize(10, "".to_string())
+                                }
+                            }
+                        },
+                        HomepageSse::State(_) => {}
+                    },
                     Err(e) => {
                         log::error!("{}", e);
                     }
