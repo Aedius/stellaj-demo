@@ -1,5 +1,6 @@
 mod auth;
 mod event;
+mod game;
 
 #[macro_use]
 extern crate rocket;
@@ -25,9 +26,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     rocket::build()
         .manage(EventDb::new(event_db.clone()))
-        .mount("/event", routes![event::greetings, event::greet])
+        .mount("/event", routes![event::greetings])
         .mount("/auth", auth::get_route())
-        .mount("/", FileServer::from(relative!("web")))
+        .mount("/game", game::get_route())
+        .mount("/", FileServer::from(relative!("web/home")))
         .launch()
         .await?;
 

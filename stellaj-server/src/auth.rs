@@ -11,7 +11,7 @@ use serde_json::value::Value;
 use urlencoding::encode;
 
 pub fn get_route() -> Vec<Route> {
-    return routes![login, login_token, welcome];
+    return routes![login, login_token];
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -133,9 +133,4 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5rLHfJBzm3Z+abdmeDNYSvwqWou5TGbyqi4J
             Some(_) => Outcome::Failure((Status::BadRequest, KeyCloakError::Invalid)),
         }
     }
-}
-
-#[get("/welcome")]
-pub fn welcome(user: KeyCloakUser) -> String {
-    user.username.to_string()
 }

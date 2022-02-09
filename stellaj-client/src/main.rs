@@ -61,20 +61,20 @@ impl Component for App {
                 let token = resp.json::<Tokens>().await.unwrap();
                 log::info!("tokens : {:?}", token);
 
-                let message = Request::get("/auth/welcome")
-                    .header(
-                        "Authorization",
-                        format!("Bearer {}", token.access_token).as_str(),
-                    )
-                    .send()
-                    .await
-                    .unwrap();
-
-                log::info!("message : {:?}", message.text().await.unwrap());
+                // let message = Request::get("/auth/welcome")
+                //     .header(
+                //         "Authorization",
+                //         format!("Bearer {}", token.access_token).as_str(),
+                //     )
+                //     .send()
+                //     .await
+                //     .unwrap();
+                //
+                // log::info!("message : {:?}", message.text().await.unwrap());
 
                 LocalStorage::set("token", token).unwrap();
 
-                location.replace("game").unwrap();
+                location.replace("game/").unwrap();
             });
         }
 
@@ -104,9 +104,6 @@ impl Component for App {
                     <p>{ "Hello World" }</p>
                     <p>
                         <a href="/auth/login">{"login"}</a>
-                    </p>
-                    <p>
-                        <a href="/event/hello/">{"clic and add your name"}</a>
                     </p>
                     <hr/>
                     <Welcome />
