@@ -2,22 +2,18 @@ use crate::EventDb;
 use eventstore::{EventData, SubEvent};
 use rocket::futures::TryStreamExt;
 use rocket::response::stream::{Event, EventStream};
-use rocket::serde::{Deserialize, Serialize};
+// use rocket::serde::{Deserialize, Serialize};
+use public_event::{HomepageEvent, HomepageSse, Player};
 use rocket::State;
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(crate = "rocket::serde")]
-struct Greeting {
-    name: String,
-}
 
 #[get("/<name>")]
 pub async fn greet(db_state: &State<EventDb>, name: &str) -> String {
     let db = db_state.db.clone();
 
-    let payload = Greeting {
-        name: name.to_string(),
-    };
+    let payload = HomepageEvent::NewPlayer(Player {
+        pseudo: name.to_string(),
+        is_bot: false,
+    });
     let greet = EventData::json("greeting", &payload).unwrap();
 
     let _ = db
@@ -48,11 +44,12 @@ pub async fn greetings(db_state: &State<EventDb>) -> EventStream![] {
 
                         match recorded_event.event_type.as_str() {
                             "greeting" => {
-                                let gr_event : Greeting = recorded_event.as_json().unwrap();
+                                let gr_event : HomepageEvent = recorded_event.as_json().unwrap();
 
                                 println!("{:?}", gr_event);
+                                let sse = HomepageSse::Event(gr_event);
 
-                                yield Event::json(&gr_event);
+                                yield Event::json(&sse);
                             }
                             _ =>{
                                 println!("Event {} not recognized", recorded_event.event_type);

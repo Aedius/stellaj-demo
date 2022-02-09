@@ -1286,6 +1286,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "public-event"
+version = "0.0.1"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1895,6 +1903,7 @@ dependencies = [
  "gloo-utils",
  "js-sys",
  "log",
+ "public-event",
  "rand",
  "rand_core",
  "reqwasm",
@@ -1915,6 +1924,7 @@ version = "0.0.1"
 dependencies = [
  "eventstore",
  "jsonwebtokens",
+ "public-event",
  "reqwest",
  "rocket",
  "serde_json",
